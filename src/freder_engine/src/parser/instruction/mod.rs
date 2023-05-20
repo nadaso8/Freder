@@ -53,4 +53,7 @@ impl Instruction {
     fn from() -> Self{ 
         todo!()
     }
+    fn synthesize(self, reaction_block_index: usize) -> ReactionNetwork {
+        todo!()
+    }
 }
