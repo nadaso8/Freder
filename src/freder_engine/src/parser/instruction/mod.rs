@@ -8,7 +8,7 @@ use marlea_engine::trial::reaction_network::{
 };
 
 
-pub enum Variable {
+enum Variable {
     Constant(String, usize),  // a constant value which will be optimized into the structure of the CRN
     Boolean(String), // a value which must always have a low value NOTE: this is not necesarilly always less than 1
     IntDescrete(String), // a value who's quantity is represented in in the count of a single species
@@ -21,7 +21,7 @@ impl Variable {
     }
 }
 
-pub enum Condition {
+enum Condition {
     GreaterThan(Variable, Variable),
     LessThan(Variable, Variable), 
     Equivalent(Variable, Variable),
@@ -33,8 +33,8 @@ impl Condition {
     }
 }
 
-pub enum Instruction {
-    CustomBlock(ReactionNetwork), // manually define a chemical reaction network. if compiled with the rustc compiler it will instantiate marlea and use the simulated result to run as a standard program
+enum Instruction {
+    CustomBlock(ReactionNetwork, Variable, Variable), // manually define a chemical reaction network. if compiled with the rustc compiler it will instantiate marlea and use the simulated result to run as a standard program
     Assign(Variable),
     Add(Variable, Variable), 
     DestructiveAdd(Variable,Variable),
