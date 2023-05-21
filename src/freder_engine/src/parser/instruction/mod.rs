@@ -1,4 +1,4 @@
-use std::string;
+use std::string::String;
 use marlea_engine::trial::reaction_network::{
     ReactionNetwork,
     reaction::{
@@ -7,19 +7,41 @@ use marlea_engine::trial::reaction_network::{
     },
 };
 
-
 enum Variable {
-    Constant(String, usize),  // a constant value which will be optimized into the structure of the CRN
-    Boolean(String), // a value which must always have a low value NOTE: this is not necesarilly always less than 1
-    IntDescrete(String), // a value who's quantity is represented in in the count of a single species
-    IntPacked(String, usize), // a value who's quanitty is represented by the presence of some width of species
+    Constant(String, usize),  
+    Boolean(String), 
+    IntDescrete(String),
+    IntPacked(String, usize), 
 }
 
-impl Variable {
-    fn from() -> Self {
-        todo!()
+impl From<&str> for Variable {
+    fn from(s: &str) -> Self {
+        todo!("read over for logical completeness and decide how variables which have an associated size should be determined");
+        match s.split(':').collect::<Vec<&str>>()[..] {
+            [name_str, "const", size_str] => {
+                let name = name_str.to_string();
+                let size: usize = size_str.parse().unwrap();
+                Variable::Constant(name, size)
+            }
+            [name_str, "bool"] => {
+                let name = name_str.to_string();
+                Variable::Boolean(name)
+            }
+            [name_str, "int", size_str] => {
+                let name = name_str.to_string();
+                let size: usize = size_str.parse().unwrap();
+                Variable::IntPacked(name, size)
+            }
+            [name_str, "int"] => {
+                let name = name_str.to_string();
+                Variable::IntDescrete(name)
+            }
+            [_, type_str, _] => panic!("invalid variable type: {}", type_str),
+            _ => panic!("invalid variable declaration"),
+        }
     }
 }
+
 
 enum Condition {
     GreaterThan(Variable, Variable),
@@ -27,14 +49,15 @@ enum Condition {
     Equivalent(Variable, Variable),
 }
 
-impl Condition {
-    fn from() -> Self {
+impl From<&str> for Condition {
+    /// converts from a str written in rust syntax into the various condition types 
+    fn from(s: &str) -> Self {
         todo!()
     }
 }
 
 enum Instruction {
-    CustomBlock(ReactionNetwork, Variable, Variable), // manually define a chemical reaction network. if compiled with the rustc compiler it will instantiate marlea and use the simulated result to run as a standard program
+    CustomBlock(ReactionNetwork, Variable, Variable),
     Assign(Variable),
     Add(Variable, Variable), 
     DestructiveAdd(Variable,Variable),
@@ -49,10 +72,14 @@ enum Instruction {
     Ternary(Condition,usize,usize),
 }
 
-impl Instruction {
-    fn from() -> Self{ 
+impl From<&str> for Instruction {
+    /// converts from a str written in rust syntax into the various Instruction types 
+    fn from(s: &str) -> Self {
         todo!()
     }
+}
+
+impl Instruction {
     fn synthesize(self, reaction_block_index: usize) -> ReactionNetwork {
         todo!()
     }
